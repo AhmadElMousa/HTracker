@@ -1,11 +1,14 @@
+// saves user habits from local storage
 function saveToLocalStorage(habits) {
   localStorage.setItem("habits", JSON.stringify(habits));
 }
 
+// loads user habits from local storage
 function loadFromLocalStorage() {
   return JSON.parse(localStorage.getItem("habits")) || [];
 }
 
+// renders the habits table after user adds a habit or on load
 function renderTable() {
   const habits = loadFromLocalStorage();
   const tbody = document.querySelector("table tbody");
@@ -20,11 +23,12 @@ function renderTable() {
     }></td>
                    </tr>`;
     tbody.innerHTML += row;
-    
+
     addCheckboxListeners();
   });
 }
 
+// adds a new habit to the table
 function addHabit() {
   let habitDetail = document.getElementById("habit-info").value;
   let habitType = document.getElementById("habit-type").value;
@@ -42,6 +46,7 @@ function addHabit() {
   }
 }
 
+// displays the current day and date for the user
 function getTodaysDate() {
   const pDate = document.getElementById("date");
 
@@ -68,12 +73,6 @@ function getTodaysDate() {
   pDate.innerText = `${dayName} ${formattedDate}`;
 }
 
-function habitChecked(habit) {
-  localStorage.removeItem("habits"); // Remove specific item
-  localStorage.clear(); // Clear all items
-  localStorage.setItem("habits", JSON.stringify(listOfHabits));
-}
-
 document
   .querySelector('[data-handler="show_popup"]')
   .addEventListener("click", () =>
@@ -86,6 +85,7 @@ document
     document.getElementById("popup").classList.toggle("hidden")
   );
 
+  // adds event listener to update habit status
 function addCheckboxListeners() {
   const checkboxes = document.querySelectorAll("input[type='checkbox']");
   checkboxes.forEach((checkbox) => {
