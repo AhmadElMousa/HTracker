@@ -11,21 +11,35 @@ function loadFromLocalStorage() {
 // renders the habits table after user adds a habit or on load
 function renderTable() {
   const habits = loadFromLocalStorage();
+  const date = localStorage.getItem("date");
   const tbody = document.querySelector("table tbody");
   tbody.innerHTML = "";
 
-  habits.forEach((habit, index) => {
-    const row = `<tr>
+  if (date === getCurrentDate()) {
+    habits.forEach((habit, index) => {
+      const row = `<tr>
                      <td>${habit.habit}</td>
                      <td>${habit.type}</td>
                      <td><input type="checkbox"  data-index="${index}" ${
-      habit.isChecked ? "checked" : ""
-    }></td>
+        habit.isChecked ? "checked" : ""
+      }></td>
                    </tr>`;
-    tbody.innerHTML += row;
+      tbody.innerHTML += row;
 
-    addCheckboxListeners();
-  });
+      addCheckboxListeners();
+    });
+  }else{
+    habits.forEach((habit, index) => {
+        const row = `<tr>
+                       <td>${habit.habit}</td>
+                       <td>${habit.type}</td>
+                       <td><input type="checkbox"  data-index="${index}"></td>
+                     </tr>`;
+        tbody.innerHTML += row;
+  
+        addCheckboxListeners();
+      });
+  }
 }
 
 // adds a new habit to the table
@@ -46,8 +60,19 @@ function addHabit() {
   }
 }
 
+function getCurrentDate() {
+  const currentDate = new Date();
+
+  // Get the current date in YYYY-MM-DD format
+  const year = currentDate.getFullYear();
+  const month = String(currentDate.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+  const day = String(currentDate.getDate()).padStart(2, "0");
+  const formattedDate = `${day}-${month}-${year}`;
+  return formattedDate;
+}
+
 // displays the current day and date for the user
-function getTodaysDate() {
+function setTodaysDate() {
   const pDate = document.getElementById("date");
 
   const currentDate = new Date();
@@ -71,6 +96,7 @@ function getTodaysDate() {
   const dayName = daysOfWeek[currentDate.getDay()];
 
   pDate.innerText = `${dayName} ${formattedDate}`;
+  localStorage.setItem("date", formattedDate);
 }
 
 document
@@ -85,7 +111,7 @@ document
     document.getElementById("popup").classList.toggle("hidden")
   );
 
-  // adds event listener to update habit status
+// adds event listener to update habit status
 function addCheckboxListeners() {
   const checkboxes = document.querySelectorAll("input[type='checkbox']");
   checkboxes.forEach((checkbox) => {
@@ -98,5 +124,5 @@ function addCheckboxListeners() {
   });
 }
 
-getTodaysDate();
+setTodaysDate();
 renderTable();
