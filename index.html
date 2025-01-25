@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>HTracker</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A website for tracking daily habits" />
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>HTracker</h1>
+    </header>
+    <main>
+      <div class="intro">
+        <p>A better way to track your daily habits</p>
+      </div>
+      <div class="date-div">
+        <p id="date"></p>
+      </div>
+      <div class="container">
+        <div class="habits-container">
+          <table id="habits-table" class="habits-table">
+            <thead>
+              <tr>
+                <th>Habit</th>
+                <th>Type</th>
+                <th class="checkbox"></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <button data-handler="show_popup" class="add-btn">Add new habit</button>
+        <div
+          id="popup"
+          class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+        >
+          <div class="bg-white p-6 rounded-lg w-96">
+            <h2 class="font-title text-xl mb-4">Add new habit</h2>
+            <form onsubmit="return false;">
+              <label class="block mb-4" for="habit-info">
+                <span class="block mb-1">Habit</span>
+                <input name="habit-info" id="habit-info"
+                  type="text"
+                  placeholder="Habit name or description"
+                  class="w-full border border-neutral-300 rounded-md px-3 py-2"
+                />
+              </label>
+              <label class="block mb-4">
+                <span class="block mb-1">Type</span>
+                <input id="habit-type"
+                  type="text"
+                  placeholder="Type of habit (Good, Bad, Personal, Work)"
+                  class="w-full border border-neutral-300 rounded-md px-3 py-2"
+                />
+              </label>
+              <div class="flex justify-end gap-4">
+                <button data-handler="hide_popup"
+                  type="button"
+                  class="bg-neutral-200 text-neutral-900 px-4 py-2 rounded-md"
+                  onClick="{() =>
+              document.getElementById('popup').classList.toggle('hidden')
+            }"
+                >
+                  Cancel
+                </button>
+                <button onclick="addHabit()"
+                  class="bg-primary-500 text-white px-4 py-2 rounded-md"
+                >
+                  Add
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="./scripts/index.js"></script>
+  </body>
+</html>
