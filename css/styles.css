@@ -5,29 +5,39 @@
 
 body {
     background-color: #FFFFFF;
+    width: 100vw;
 }
 
 header {
+    width: 20%;
     height: max-content;
     background-color: #212227;
     padding: 15px;
     text-align: center;
-    margin-bottom: 10px;
     color: white;
+    margin: 10px auto;
+    border-radius: 5px 20px 5px 20px;
+    box-shadow: 5px 5px 3px hsla(230, 8%, 14%, 0.6);
 }
 
 header h1 {
-    font-size: 4rem;
+    font-size: 4em;
     font-family: Pristina;
 }
 
 main {
-    width: 100%;
+    background-color: #212227;
+    width: 40%;
+    min-width: fit-content;
+    padding: 20px;
     max-width: 600px;
-    margin: 0 auto;
+    margin: 30px auto;
     display: flex;
     flex-direction: column;
     gap: 10px;
+    color: white;
+    border-radius: 10px 30px 10px 30px;
+    box-shadow: 10px 10px 3px hsla(230, 8%, 14%, 0.6);
 }
 
 .intro p {
@@ -62,6 +72,7 @@ main {
 }
 
 .habits-table {
+  color: black;
     border-collapse: collapse;
     border-spacing: 0;
     background-color: #FFE8D1;
@@ -173,6 +184,7 @@ td, th {
     background-color: #212227;
   }
   .bg-white {
+    color: #212227;
     --tw-bg-opacity: 1;
     background-color: rgb(255 255 255 / var(--tw-bg-opacity));
   }
