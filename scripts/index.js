@@ -9,6 +9,7 @@ function loadFromLocalStorage() {
 }
 
 const tbody = document.getElementById("habitsBody");
+const habitsDiv = document.getElementById("habits-div");
 
 // renders the habits table after user adds a habit or on load
 function renderTable() {
@@ -41,8 +42,42 @@ function renderTable() {
       <td><span class="delete-btn" data-index="${index}"><img src="./delete.png"></span></td>
                      </tr>`;
       tbody.innerHTML += row;
+    });
+  }
+}
+
+function renderTableWithDiv() {
+  const habits = loadFromLocalStorage();
+  const date = localStorage.getItem("date");
+  habitsDiv.innerHTML = "";
+
+  if (date === getCurrentDate()) {
+    habits.forEach((habit, index) => {
+      const row = `<div class="habit ${
+        habit.isChecked ? "habit-checked" : "habit-unchecked"
+      }" data-index="${index}">
+            <p>${habit.habit}</p>
+            <input ${
+              habit.isChecked ? "checked" : ""
+            } type="checkbox" class="switch" />
+            <span class="edit-btn"><img src="./edit.png" /></span>
+            <span class="delete-btn"><img src="./delete.png" /></span>
+          </div>`;
+      console.dir(habit);
+      habitsDiv.innerHTML += row;
 
       //addCheckboxListeners();
+    });
+  } else {
+    localStorage.setItem("date", getCurrentDate());
+    habits.forEach((habit, index) => {
+      const row = `<div class="habit habit-unchecked" data-index="${index}">
+            <p>${habit.habit}</p>
+            <input type="checkbox" class="switch" />
+            <span class="edit-btn"><img src="./edit.png" /></span>
+            <span class="delete-btn"><img src="./delete.png" /></span>
+          </div>`;
+      habitsDiv.innerHTML += row;
     });
   }
 }
@@ -50,16 +85,14 @@ function renderTable() {
 // adds a new habit to the table
 function addHabit() {
   let habitDetail = document.getElementById("habit-info").value;
-  let habitType = document.getElementById("habit-type").value;
-  if (habitDetail && habitType) {
+  if (habitDetail) {
     const habits = loadFromLocalStorage();
-    habits.push({ habit: habitDetail, type: habitType, isChecked: false }); // Add new habit
+    habits.push({ habit: habitDetail, isChecked: false }); // Add new habit
     saveToLocalStorage(habits); // Save updated list to localStorage
-    renderTable(); // Re-render the table
+    renderTableWithDiv(); // Re-render the table
 
     // Clear input fields
     document.getElementById("habit-info").value = "";
-    document.getElementById("habit-type").value = "";
     document.getElementById("popup").classList.toggle("hidden");
   } else {
     alert("Please fill in both fields!");
@@ -102,7 +135,6 @@ function setTodaysDate() {
   const dayName = daysOfWeek[currentDate.getDay()];
 
   pDate.innerText = `${dayName} ${formattedDate}`;
-  localStorage.setItem("date", formattedDate);
 }
 
 document
@@ -117,46 +149,19 @@ document
     document.getElementById("popup").classList.toggle("hidden")
   );
 
-// adds event listener to update habit status
-function addCheckboxListeners() {
-  const checkboxes = document.querySelectorAll("input[type='checkbox']");
-  checkboxes.forEach((checkbox) => {
-    checkbox.addEventListener("change", (event) => {
-      const index = event.target.getAttribute("data-index"); // Get the habit index
-      const habits = loadFromLocalStorage();
-      habits[index].isChecked = event.target.checked; // Update the isChecked property
-      saveToLocalStorage(habits); // Save the updated data to localStorage
-    });
-  });
-}
-
-function addEditEventListener() {
-  document.querySelectorAll(".edit-btn").forEach((span) => {
-    span.addEventListener("mouseclick", (event) => {
-      makeCellEditable(
-        span.parentElement.parentElement,
-        event.getAttribute(data - index)
-      );
-    });
-  });
-}
-
-tbody.addEventListener("click", (event) => {
+habitsDiv.addEventListener("click", (event) => {
   if (event.target.closest(".edit-btn")) {
     const editBtn = event.target.closest(".edit-btn");
     const index = editBtn.getAttribute("data-index");
-    const row = editBtn.closest("tr");
+    const row = editBtn.parentElement.closest("div");
 
     // Get the current values
-    const habitCell = row.querySelector("td:nth-child(1)");
-    const typeCell = row.querySelector("td:nth-child(2)");
+    const habitCell = row.querySelector("p");
 
     const habitValue = habitCell.textContent;
-    const typeValue = typeCell.textContent;
 
     // Replace text with input fields
     habitCell.innerHTML = `<input type="text" value="${habitValue}" class="edit-input">`;
-    typeCell.innerHTML = `<input type="text" value="${typeValue}" class="edit-input">`;
 
     // Change the edit button to a save button
     editBtn.innerHTML = `<img src="./save.png">`;
@@ -165,37 +170,34 @@ tbody.addEventListener("click", (event) => {
   }
 });
 
-tbody.addEventListener("click", (event) => {
+habitsDiv.addEventListener("click", (event) => {
   if (event.target.closest(".save-btn")) {
     const habits = loadFromLocalStorage();
     const saveBtn = event.target.closest(".save-btn");
-    const index = saveBtn.getAttribute("data-index");
-    const row = saveBtn.closest("tr");
+    const index = saveBtn.parentElement.getAttribute("data-index");
+    const row = saveBtn.closest("div");
 
     // Get the updated values from the input fields
-    const habitInput = row.querySelector("td:nth-child(1) .edit-input");
-    const typeInput = row.querySelector("td:nth-child(2) .edit-input");
+    const habitInput = row.querySelector("p .edit-input");
 
     const updatedHabit = habitInput.value;
-    const updatedType = typeInput.value;
 
     // Update the habits array
     habits[index].habit = updatedHabit;
-    habits[index].type = updatedType;
 
     saveToLocalStorage(habits);
 
     // Re-render the table
-    renderTable();
+    renderTableWithDiv();
 
     // Optionally, log the updated habits array
     console.log("Updated Habits:", habits);
   }
 });
 
-document.getElementById("habitsBody").addEventListener("click", (event) => {
+document.getElementById("habits-div").addEventListener("click", (event) => {
   if (event.target.closest(".delete-btn")) {
-    const index = event.target
+    const index = event.target.parentElement
       .closest(".delete-btn")
       .getAttribute("data-index");
     const habits = loadFromLocalStorage();
@@ -203,25 +205,29 @@ document.getElementById("habitsBody").addEventListener("click", (event) => {
     if (index >= 0 && index < habits.length) {
       habits.splice(index, 1);
       saveToLocalStorage(habits);
-      renderTable();
+      renderTableWithDiv();
     }
   }
 });
 
-tbody.addEventListener("change", (event) => {
+habitsDiv.addEventListener("change", (event) => {
   if (event.target.matches('input[type="checkbox"]')) {
     const habits = loadFromLocalStorage();
     const checkbox = event.target;
-    const index = checkbox.getAttribute("data-index");
+    const index = checkbox.parentElement.dataset.index;
+    checkbox.parentElement.classList.toggle("habit-checked", checkbox.checked);
+    checkbox.parentElement.classList.toggle(
+      "habit-unchecked",
+      !checkbox.checked
+    );
 
     // Update the isChecked property in the habits array
     habits[index].isChecked = checkbox.checked;
     saveToLocalStorage(habits);
-
     // Optionally, log the updated habits array
     console.log("Updated Habits:", habits);
   }
 });
 
 setTodaysDate();
-renderTable();
+renderTableWithDiv();
