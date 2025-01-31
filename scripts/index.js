@@ -46,6 +46,7 @@ function renderTable() {
   }
 }
 
+// renders the habits table using divs instead of a table after user adds a habit or on load
 function renderTableWithDiv() {
   const habits = loadFromLocalStorage();
   const date = localStorage.getItem("date");
@@ -99,6 +100,7 @@ function addHabit() {
   }
 }
 
+// gets the current date in dd-MM-yyyy format
 function getCurrentDate() {
   const currentDate = new Date();
 
@@ -149,6 +151,7 @@ document
     document.getElementById("popup").classList.toggle("hidden")
   );
 
+  // adds event listener for edit button 
 habitsDiv.addEventListener("click", (event) => {
   if (event.target.closest(".edit-btn")) {
     const editBtn = event.target.closest(".edit-btn");
@@ -170,6 +173,7 @@ habitsDiv.addEventListener("click", (event) => {
   }
 });
 
+  // adds event listener for save button which appears when the user is editing a habit 
 habitsDiv.addEventListener("click", (event) => {
   if (event.target.closest(".save-btn")) {
     const habits = loadFromLocalStorage();
@@ -195,6 +199,7 @@ habitsDiv.addEventListener("click", (event) => {
   }
 });
 
+  // adds event listener for delete button 
 document.getElementById("habits-div").addEventListener("click", (event) => {
   if (event.target.closest(".delete-btn")) {
     const index = event.target.parentElement
@@ -210,6 +215,7 @@ document.getElementById("habits-div").addEventListener("click", (event) => {
   }
 });
 
+  // adds event listener for checkbox button 
 habitsDiv.addEventListener("change", (event) => {
   if (event.target.matches('input[type="checkbox"]')) {
     const habits = loadFromLocalStorage();
